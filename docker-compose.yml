@@ -1,0 +1,63 @@
+name: pihole
+services:
+    pihole:
+        cpu_shares: 90
+        command: []
+        container_name: pihole
+        deploy:
+            resources:
+                limits:
+                    memory: "16198402048"
+        dns:
+            - 8.8.8.8
+            - 8.8.4.4
+        environment:
+            TZ: Asia/Manila
+            WEBPASSWORD: kien1029
+        hostname: pihole
+        image: pihole/pihole:latest
+        labels:
+            icon: http://172.16.254.130:81/admin/img/logo.svg
+        networks:
+            pihole_default: null
+        ports:
+            - mode: ingress
+              target: 80
+              published: "81"
+              protocol: tcp
+            - mode: ingress
+              target: 53
+              published: "53"
+              protocol: tcp
+            - mode: ingress
+              target: 53
+              published: "53"
+              protocol: udp
+        restart: unless-stopped
+        volumes:
+            - type: bind
+              source: /home/kdolorfo/development/pihole/etc-pihole
+              target: /etc/pihole
+              bind:
+                create_host_path: true
+            - type: bind
+              source: /home/kdolorfo/development/pihole/etc-dnsmasq.d
+              target: /etc/dnsmasq.d
+              bind:
+                create_host_path: true
+networks:
+    default:
+        name: pihole_default
+    pihole_default:
+        name: pihole_default
+x-casaos:
+    author: self
+    category: self
+    hostname: ""
+    icon: http://172.16.254.130:81/admin/img/logo.svg
+    index: /admin
+    is_uncontrolled: false
+    port_map: "81"
+    scheme: http
+    title:
+        custom: PiHole
